@@ -1,7 +1,10 @@
-import { signin } from "../../api/api";
+import { signin } from "../api/api";
 import { setAccessToken } from "./LocalToken";
+import { useNavigate } from "react-router-dom";
 
 const SigninForm = () => {
+  const navigate = useNavigate();
+
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
@@ -16,8 +19,8 @@ const SigninForm = () => {
     if (!loginRes) return;
 
     // 토큰 저장
-    const storedToken = setAccessToken(loginRes.access_token);
-    if (!storedToken) return;
+    setAccessToken(loginRes.access_token);
+    navigate("/todo");
   };
 
   return (
