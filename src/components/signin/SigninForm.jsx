@@ -1,23 +1,5 @@
-import api from "../../api";
-import axios from "axios";
-
-const login = async (payload) => {
-  try {
-    const res = await axios.post(api.signin(), payload, {
-      "Content-Type": "application/json",
-    });
-    // 토큰 저장
-    // setAccessToken(res.data.access_token);
-    return res;
-  } catch (err) {
-    console.log(err);
-    return null;
-  }
-};
-
-const getUserInfo = async (access_token) => {
-  console.log(access_token);
-};
+import { signin } from "../../api/api";
+import { setAccessToken } from "./LocalToken";
 
 const SigninForm = () => {
   const onSubmitHandler = async (e) => {
@@ -30,8 +12,12 @@ const SigninForm = () => {
       password: formData.get("password"),
     };
 
-    const loginRes = await login(payload);
+    const loginRes = await signin(payload);
     if (!loginRes) return;
+
+    // 토큰 저장
+    const storedToken = setAccessToken(loginRes.access_token);
+    if (!storedToken) return;
   };
 
   return (
