@@ -1,13 +1,11 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import NavBar from "../components/NavBar";
 
 const TodoPage = () => {
   return (
     <>
+      <NavBar />
       <h1>Todo 페이지 입니다.</h1>
-      <div>
-        <Link to="/">홈</Link>
-      </div>
     </>
   );
 };
