@@ -1,9 +1,25 @@
+import { useState } from "react";
 import { signin } from "../api/api";
 import { setAccessToken } from "./LocalToken";
 import { useNavigate } from "react-router-dom";
 
 const SigninForm = () => {
   const navigate = useNavigate();
+
+  const [disabled, setDisabled] = useState(true);
+
+  const onFormChange = (e) => {
+    const formData = new FormData(e.currentTarget);
+
+    if (
+      formData.get("email").includes("@") &&
+      formData.get("password").length >= 8
+    ) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  };
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -16,7 +32,10 @@ const SigninForm = () => {
     };
 
     const loginRes = await signin(payload);
-    if (!loginRes) return;
+    if (!loginRes) {
+      alert("로그인 실패");
+      return;
+    }
 
     // 토큰 저장
     setAccessToken(loginRes.access_token);
@@ -25,7 +44,7 @@ const SigninForm = () => {
 
   return (
     <>
-      <form onSubmit={onSubmitHandler}>
+      <form onSubmit={onSubmitHandler} onChange={onFormChange}>
         <div>
           <label>
             이메일:
@@ -42,7 +61,9 @@ const SigninForm = () => {
             />
           </label>
         </div>
-        <button data-testid="signin-button">로그인</button>
+        <button data-testid="signin-button" disabled={disabled}>
+          로그인
+        </button>
       </form>
     </>
   );
