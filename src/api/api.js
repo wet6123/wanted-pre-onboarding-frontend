@@ -13,3 +13,12 @@ export const signin = async (payload) => {
     return null;
   }
 };
+
+export const signup = async (payload) => {
+  try {
+    const res = await axios.post(api.signup(), payload, config);
+    return res;
+  } catch (err) {
+    return null;
+  }
+};
