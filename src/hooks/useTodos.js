@@ -29,6 +29,17 @@ const authConfig = (access_token) => ({
   },
 });
 
+export const getTodos = async (dispatch) => {
+  dispatch({ type: "GET_TODOS" });
+  try {
+    const token = window.localStorage.getItem("access_token");
+    const response = await axios.get(api.getTodos(), authConfig(token));
+    dispatch({ type: "GET_TODOS_SUCCESS", data: response.data });
+  } catch (err) {
+    dispatch({ type: "GET_TODOS_ERROR", error: err });
+  }
+};
+
 export const createTodo = async (dispatch, payload) => {
   dispatch({ type: "CREATE_TODO" });
   try {
@@ -45,39 +56,30 @@ export const createTodo = async (dispatch, payload) => {
   }
 };
 
-export const getTodos = async (dispatch) => {
-  dispatch({ type: "GET_TODOS" });
+export const deleteTodo = async (dispatch, id) => {
+  dispatch({ type: "DELETE_TODO" });
   try {
     const token = window.localStorage.getItem("access_token");
-    const response = await axios.get(api.getTodos(), authConfig(token));
-    dispatch({ type: "GET_TODOS_SUCCESS", data: response.data });
+    const response = await axios.delete(api.deleteTodo(id), authConfig(token));
+    dispatch({ type: "DELETE_TODO_SUCCESS", data: response.data });
+    getTodos(dispatch);
   } catch (err) {
-    dispatch({ type: "GET_TODOS_ERROR", error: err });
+    dispatch({ type: "DELETE_TODO_ERROR", error: err });
   }
 };
 
-// export const updateTodo = async (dispatch, id, payload) => {
-//   dispatch({ type: "UPDATE_TODO" });
-//   try {
-//     const token = window.localStorage.getItem("access_token");
-//     const response = await axios.put(
-//       api.updateTodo(id),
-//       payload,
-//       authConfig(token)
-//     );
-//     dispatch({ type: "UPDATE_TODO_SUCCESS", data: response.data });
-//   } catch (err) {
-//     dispatch({ type: "UPDATE_TODO_ERROR", error: err });
-//   }
-// };
-
-// export const deleteTodo = async (dispatch, id, payload) => {
-//   dispatch({ type: "DELETE_TODO" });
-//   try {
-//     const token = window.localStorage.getItem("access_token");
-//     const response = await axios.delete(api.updateTodo(id), authConfig(token));
-//     dispatch({ type: "DELETE_TODO_SUCCESS", data: response.data });
-//   } catch (err) {
-//     dispatch({ type: "DELETE_TODO_ERROR", error: err });
-//   }
-// };
+export const updateTodo = async (dispatch, id, payload) => {
+  dispatch({ type: "UPDATE_TODO" });
+  try {
+    const token = window.localStorage.getItem("access_token");
+    const response = await axios.put(
+      api.updateTodo(id),
+      payload,
+      authConfig(token)
+    );
+    dispatch({ type: "UPDATE_TODO_SUCCESS", data: response.data });
+    getTodos(dispatch);
+  } catch (err) {
+    dispatch({ type: "UPDATE_TODO_ERROR", error: err });
+  }
+};
